@@ -1,0 +1,8 @@
+Flask
+pandas
+openpyxl
+requests
+fpdf2
+redis
+python-dotenv
+openrouteservice

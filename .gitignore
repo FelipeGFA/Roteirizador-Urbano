@@ -1,0 +1,25 @@
+# Ignorar arquivos do ambiente virtual
+.venv/
+
+# Ignorar arquivos do Excel
+*.xlsx
+
+# Ignorar arquivos temporários do Excel
+~$*.xlsx
+
+# Ignorar diretórios de cache do Python
+__pycache__/
+
+# Ignorar arquivos de pycache do Python
+*.pyc
+
+#Ignorar servidor local
+local.py
+
+# Ignorar arquivos de variáveis de ambiente
+.env
+variaveis.env
+
+#Ignorar vscode
+.vscode/
+

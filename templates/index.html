@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otimizador de Rotas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <button id="theme-switch">
+        <img src="{{ url_for('static', filename='icons/light_mode_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg') }}" alt="Light Mode">
+        <img src="{{ url_for('static', filename='icons/dark_mode_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg') }}" alt="Dark Mode">
+    </button>
+    <main class="main">
+        <div class="container">
+            {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+            <section class="upload-section" id="uploadSection">
+                <div class="filter-container">
+                    <div class="equipe-container">
+                        <h4 class="filter-title">Selecionar Base:</h4>
+                        <select id="base-select" name="base" class="custom-select" required>
+                            <option value="" disabled selected hidden>Selecione a base</option>
+                            <option value="Maceió I">Maceió I</option>
+                            <option value="Maceió II">Maceió II</option>
+                            <option value="SeedMoney">SeedMoney</option>
+                            <option value="Rio Largo">Rio Largo</option>
+                            <option value="São Miguel dos Campos">São Miguel dos Campos</option>
+                            <option value="União dos Palmares">União dos Palmares</option>
+                            <option value="Porto Calvo">Porto Calvo</option>
+                        </select>
+                    </div>
+                    <div class="equipe-container" id="fiscal-container" style="display: none;">
+                        <h4 class="filter-title">Selecionar Fiscal:</h4>
+                        <select id="fiscal-select" name="fiscal" class="custom-select" required>
+                            <option value="" disabled selected hidden>Selecione o fiscal</option>
+                        </select>
+                    </div>
+                    <div class="equipe-container" id="equipe-container" style="display: none;">
+                        <h4 class="filter-title">Selecionar Equipe:</h4>
+                        <select id="recurso-select" name="recurso" class="custom-select" required>
+                            <option value="" disabled selected hidden>Selecione a equipe</option>
+                        </select>
+                    </div>
+                    <h4 class="filter-title">Filtrar por tipo de serviço:</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <span class="checkbox-text">SFRT</span>
+                            <div class="checkbox-wrapper-3">
+                                <input type="checkbox" id="cbx-sfrt" name="code" value="SFRT"/>
+                                <label for="cbx-sfrt" class="toggle"><span></span></label>
+                            </div>
+                        </div>
+                        <div class="checkbox-item">
+                            <span class="checkbox-text">SFNR</span>
+                            <div class="checkbox-wrapper-3">
+                                <input type="checkbox" id="cbx-sfnr" name="code" value="SFNR"/>
+                                <label for="cbx-sfnr" class="toggle"><span></span></label>
+                            </div>
+                        </div>
+                        <div class="checkbox-item">
+                            <span class="checkbox-text">Demais Serviços</span>
+                            <div class="checkbox-wrapper-3">
+                                <input type="checkbox" id="cbx-demais" name="code" value="Demais Serviços"/>
+                                <label for="cbx-demais" class="toggle"><span></span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content" id="uploadContentInitial">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3 class="upload-text">Clique para selecionar o arquivo</h3>
+                        <p class="upload-description">ou arraste e solte a planilha aqui </p>
+                        <div class="upload-formats">
+                            <span class="format-tag">.xlsx</span>
+                            <span class="format-tag">.xls</span>
+                        </div>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
+                        <button class="btn btn-primary" id="selectFileBtn">
+                            <i class="fas fa-folder-open"></i>
+                            Selecionar Arquivo
+                        </button>
+                    </div>
+                    <div class="file-selected-content" id="fileSelectedContent" style="display: none;">
+                        <div class="file-icon">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <h3 id="selectedFileName" class="selected-file-name"></h3>
+                        <p class="selected-file-description">Arquivo pronto para otimização</p>
+                        <button class="btn btn-secondary" id="changeFileBtn">
+                            <i class="fas fa-exchange-alt"></i>
+                            Trocar Arquivo
+                        </button>
+                    </div>
+                </div>
+                    <button class="btn btn-primary" id="submitBtn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar
+                    </button>                
+            </section>
+
+    <section class="results-section" id="resultsSection" style="display: none;">
+        <button class="btn" id="backButton"><i class="fas fa-arrow-left"></i> Voltar</button>
+                <div class="results-header">
+                    <h2 class="results-title">Rotas Otimizadas</h2>
+                    <p class="results-subtitle">Suas rotas foram calculadas com sucesso</p>
+                </div>
+                <div class="summary-table-container" id="summaryTableContainer" style="display: none;">
+                    <h3 class="summary-table-title">Resumo das Rotas por Equipe</h3>
+                    <div class="table-responsive">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Equipe</th>
+                                    <th>Distância Total</th>
+                                    <th>Média por Ponto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="results-grid" id="resultsGrid"></div>
+            </section>
+        </div>
+    </main>
+
+    <script id="dados-rota" type="application/json">
+        {{ dados_rota_json | default('null') | safe }}
+    </script>
+    <script>
+        const dadosElement = document.getElementById('dados-rota');
+        window.dadosRota = JSON.parse(dadosElement.textContent.trim());
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
+
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="spinner"></div>
+        <p id="loadingText">Processando...</p>
+    </div>
+</body>
+</html>
