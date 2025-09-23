@@ -75,7 +75,7 @@ Crie um arquivo chamado `.env` na raiz do projeto e adicione as seguintes variá
 
 ```env
 # URL de conexão com o seu servidor Redis
-REDIS_URL=redis://localhost:6379/0
+REDIS_URL=servidor_redis
 
 # Sua chave de API do OpenRouteService
 ORS_API_KEY=sua_chave_de_api_aqui
