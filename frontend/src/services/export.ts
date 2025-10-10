@@ -1,4 +1,3 @@
-
 import html2canvas from 'html2canvas';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -24,7 +23,6 @@ async function fetchExport(endpoint: string, body: any) {
     });
 
     if (response.status !== 200) {
-        // Attempt to read the error message from the blob
         const errorText = await response.data.text();
         const errorData = JSON.parse(errorText);
         throw new Error(errorData.error || 'Falha na exportação');

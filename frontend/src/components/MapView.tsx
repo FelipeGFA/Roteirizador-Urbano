@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -62,7 +61,6 @@ const MapView: React.FC<MapViewProps> = ({ routeData, resourceName }) => {
         map.fitBounds(bounds.pad(0.1));
       }
 
-      // Invalidate size after a short delay to ensure correct rendering
       setTimeout(() => map.invalidateSize(), 200);
     }
 

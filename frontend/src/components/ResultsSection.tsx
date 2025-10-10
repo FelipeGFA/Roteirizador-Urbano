@@ -1,4 +1,3 @@
-
 import type { OptimizedRouteData, RouteData } from '../types';
 import MapView from './MapView';
 import { exportarRotaParaPDF, exportarRotaParaPlanilha } from '../services/export';
@@ -6,7 +5,7 @@ import { exportarRotaParaPDF, exportarRotaParaPlanilha } from '../services/expor
 interface ResultsSectionProps {
   data: OptimizedRouteData;
   onBack: () => void;
-}
+}     
 
 function formatDistance(meters: number) {
     if (meters < 1000) {

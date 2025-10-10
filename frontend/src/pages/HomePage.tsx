@@ -13,7 +13,6 @@ const HomePage = () => {
     if (data.rota_id) {
       navigate(`/rotas/${data.rota_id}`);
     } else {
-      // Fallback or error handling if rota_id is not present
       setError("Otimização concluída, mas o ID da rota não foi retornado.");
     }
   };
